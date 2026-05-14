@@ -1,3 +1,4 @@
+// main.jsx
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 // testing router out
@@ -11,40 +12,57 @@ import App from './App.jsx'
 import Home from './pages/Home.jsx'
 import About from './pages/About.jsx'
 import Login from './pages/Login.jsx'
+import SignUp from './pages/SignUp.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import AdminDashboard from './pages/AdminDashboard.jsx'
+
+// import guards
+import RoleGuard from './services/RoleGuard.jsx'
 
 // import page protector
-import PageProtector from './services/PageProtector.jsx'
+import AuthGuard from './services/AuthGuard.jsx'
 
 // specify the routes for the app
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
-    children:[
+    children: [
       {
         index: true,
-        element: <Home />
+        element: <Home />,
       },
       {
-        path: 'about',
-        element: <About />
+        path: "about",
+        element: <About />,
       },
       {
-        path: 'login',
-        element: <Login />
+        path: "login",
+        element: <Login />,
       },
       {
-        path: 'dashboard',
+        path: "signup",
+        element: <SignUp />,
+      },
+      {
+        path: "dashboard",
         element: (
-          <PageProtector>
+          <AuthGuard>
             <Dashboard />
-          </PageProtector>
-        )
-      }
-    ]
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "admin",
+        element: (
+          <RoleGuard allowedRoles={["admin"]}>
+            <AdminDashboard />
+          </RoleGuard>
+        ),
+      },
+    ],
   },
-])
+]);
 
 
 createRoot(document.getElementById('root')).render(
